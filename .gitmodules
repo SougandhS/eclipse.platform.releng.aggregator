@@ -10,7 +10,8 @@
   url = https://github.com/eclipse-jdt/eclipse.jdt.core.binaries.git
 [submodule "eclipse.jdt.debug"]
   path = eclipse.jdt.debug
-  url = https://github.com/eclipse-jdt/eclipse.jdt.debug.git
+  url = https://github.com/SougandhS/eclipse.jdt.debug.git
+  branch=JavaAgent
 [submodule "eclipse.jdt.ui"]
   path = eclipse.jdt.ui
   url = https://github.com/eclipse-jdt/eclipse.jdt.ui.git
