@@ -21,7 +21,7 @@ GitHub issue (or legacy bugzilla bug ID) to track tagging the release, for examp
 
   jdk('oracle-jdk8-latest')
 
-  label('centos-latest')
+  label('basic')
 
   wrappers { //adds pre/post actions
     timestamps()
@@ -63,7 +63,7 @@ function toPushRepo() {
 	if ! [[ "$from" == http* ]]; then
 		echo $from
 	else
-		echo $(sed -e 's,http://git.eclipse.org/gitroot,ssh://genie.releng@git.eclipse.org:29418,' -e 's,https://git.eclipse.org/r,ssh://genie.releng@git.eclipse.org:29418,' -e 's/https:\\/\\/github.com/ssh:\\/\\/git@github.com/g' <<< $from)
+		echo $(sed -e 's/https:\\/\\/github.com/ssh:\\/\\/git@github.com/g' <<< $from)
 	fi
 }
 

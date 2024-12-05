@@ -1,11 +1,18 @@
 def config = new groovy.json.JsonSlurper().parseText(readFileFromWorkspace('JenkinsJobs/JobDSL.json'))
 def STREAMS = config.Streams
 
+def BUILD_CONFIGURATIONS = [ 
+  [javaVersion: 17, javaDownload: 'https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz' ],
+  [javaVersion: 21, javaDownload: 'https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090416c/35/GPL/openjdk-21_linux-x64_bin.tar.gz' ],
+  [javaVersion: 24, javaDownload: 'https://download.java.net/java/early_access/jdk24/18/GPL/openjdk-24-ea+18_linux-x64_bin.tar.gz' ]
+]
+
 for (STREAM in STREAMS){
   def MAJOR = STREAM.split('\\.')[0]
   def MINOR = STREAM.split('\\.')[1]
-
-	pipelineJob('YPBuilds/ep' + MAJOR + MINOR + 'Y-unit-cen64-gtk3-java21'){
+  for (BUILD_CONFIG in BUILD_CONFIGURATIONS){
+	
+	pipelineJob('YPBuilds/ep' + MAJOR + MINOR + 'Y-unit-cen64-gtk3-java' + BUILD_CONFIG.javaVersion){
 	
 	  logRotator {
 	    numToKeep(5)
@@ -13,7 +20,7 @@ for (STREAM in STREAMS){
 	
 	  parameters {
 	    stringParam('buildId', null, null)
-	    stringParam('javaDownload', 'https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090416c/35/GPL/openjdk-21_linux-x64_bin.tar.gz', null)
+	    stringParam('javaDownload', BUILD_CONFIG.javaDownload, null)
 	  }
 	
 	  definition {
@@ -27,69 +34,14 @@ pipeline {
 		buildDiscarder(logRotator(numToKeepStr:'5'))
 	}
   agent {
-    kubernetes {
-      label 'centos-unitpod21'
-      defaultContainer 'custom'
-      yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: "jnlp"
-    resources:
-      limits:
-        memory: "2048Mi"
-        cpu: "2000m"
-      requests:
-        memory: "512Mi"
-        cpu: "1000m"
-  - name: "custom"
-    image: "eclipse/platformreleng-centos-gtk3-metacity:8"
-    imagePullPolicy: "Always"
-    resources:
-      limits:
-        memory: "4096Mi"
-        cpu: "1000m"
-      requests:
-        # memory needs to be at least 1024Mi, see https://gitlab.eclipse.org/eclipsefdn/helpdesk/-/issues/2478
-        memory: "1024Mi"
-        cpu: "1000m"
-    securityContext:
-      privileged: false
-    tty: true
-    command:
-    - cat
-    volumeMounts:
-    - mountPath: "/opt/tools"
-      name: "volume-0"
-      readOnly: false
-    workingDir: "/home/jenkins/agent"
-  nodeSelector: {}
-  restartPolicy: "Never"
-  volumes:
-  - name: "volume-0"
-    persistentVolumeClaim:
-      claimName: "tools-claim-jiro-releng"
-      readOnly: true
-  - configMap:
-      name: "known-hosts"
-    name: "volume-1"
-  - emptyDir:
-      medium: ""
-    name: "workspace-volume"
-  - emptyDir:
-      medium: ""
-    name: "volume-3"
-"""
-    }
+    label 'ubuntu-2404'
   }
 
   stages {
       stage('Run tests'){
           steps {
-              container ('custom'){
                   wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
-                      withEnv(["JAVA_HOME_NEW=${ tool 'openjdk-jdk18-latest' }"]) {
+                      withEnv(["JAVA_HOME_NEW=${ tool 'openjdk-jdk15-latest' }"]) {
                           withAnt(installation: 'apache-ant-latest') {
                               sh \'\'\'#!/bin/bash -x
                                 
@@ -150,7 +102,6 @@ spec:
                                 
                                 echo -e "\\n\\tTotal elapsed time: ${TOTAL_TIME} \\n"
                               \'\'\'
-                          }
                       }
                   }
               }
@@ -165,4 +116,5 @@ spec:
     }
   }
  }
+}
 }

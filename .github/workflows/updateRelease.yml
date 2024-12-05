@@ -23,20 +23,9 @@ jobs:
         cache: maven
     - name: Update Versions
       run: >-
-          mvn -U -Pbuild-individual-bundles -ntp
+          mvn -U -B -ntp
           org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${{ github.event.milestone.title }}.0-SNAPSHOT
           org.eclipse.tycho:tycho-versions-plugin:set-parent-version -DnewParentVersion=${{ github.event.milestone.title }}.0-SNAPSHOT
-    - name: Build and Bump Versions
-      uses: Wandalen/wretry.action@8ceaefd717b7cdae4f2637f9a433242ade421a0a # master
-      with:
-        attempt_delay: 120000
-        attempt_limit: 10
-        command: >-
-            mvn -U -Pbuild-individual-bundles -ntp
-            clean verify
-            -DskipTests
-            -Dcompare-version-with-baselines.skip=false
-            org.eclipse.tycho:tycho-versions-plugin:bump-versions -Dtycho.bump-versions.increment=100
     - name: Create Pull Request for Release ${{ github.event.milestone.title }}
       uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
       with:
@@ -49,5 +38,3 @@ jobs:
         add-paths: |
             pom.xml
             **/pom.xml
-            **/*.MF
-

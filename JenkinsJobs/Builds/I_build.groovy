@@ -17,15 +17,15 @@ for (STREAM in STREAMS){
 # format: Minute Hour Day Month Day of the week (0-7)
 
 # - - - Integration Eclipse SDK builds - - - 
-# 2024-12 Release Schedule
+# 2025-03 Release Schedule
 # Normal : 6 PM every day (1/6 - 2/9)
-# 0 18 * * *
+0 18 * * *
 
 
 # Milestone/RC Schedule 
 # Post M1, no nightlies, I-builds only. (Be sure to "turn off" for tests and sign off days)
-0 6 9-20 11 5-7,1-3
-0 18 9-20 11 5-7,1-3
+# 0 6 14-26 2 5-7,1-3
+# 0 18 14-26 2 5-7,1-3
             """)
           }
         }
@@ -55,7 +55,7 @@ pipeline {
 	}
   agent {
     kubernetes {
-      inheritFrom 'centos-8'
+      inheritFrom 'ubuntu-2404'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -247,7 +247,7 @@ spec:
 	  stage('Aggregator maven build'){
 	      environment {
                 KEYRING = credentials('secret-subkeys-releng.asc')
-                KEYRING_PASSPHRASE = credentials('secret-subkeys-releng.acs-passphrase')
+                MAVEN_GPG_PASSPHRASE = credentials('secret-subkeys-releng.acs-passphrase')
           }
           steps {
               container('jnlp') {
@@ -423,11 +423,16 @@ spec:
               build job: 'AutomatedTests/ep''' + MAJOR + MINOR + '''I-unit-macosx-aarch64-java17', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
               build job: 'AutomatedTests/ep''' + MAJOR + MINOR + '''I-unit-macosx-x86_64-java17', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
               build job: 'AutomatedTests/ep''' + MAJOR + MINOR + '''I-unit-win32-x86_64-java17', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
-              build job: 'Start-smoke-tests', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
+              build job: 'SmokeTests/Start-smoke-tests', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
             }
           }
 		}
 		stage('Trigger publication to Maven snapshots repo') {
+			when {
+				environment name: 'COMPARATOR_ERRORS_SUBJECT', value: ''
+				// On comparator-erros, skip the deployment of snapshot version to the 'eclipse-snapshots' maven repository to prevent that ECJ snapshot
+				// from being used in verification builds. Similar to how the p2-repository is not added to the I-build composite in that case.
+			}
 			steps {
               container('jnlp') {
 				build job: 'CBIaggregator', parameters: [string(name: 'snapshotOrRelease', value: '-snapshot')], wait: false

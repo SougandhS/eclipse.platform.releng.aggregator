@@ -52,7 +52,7 @@ pipeline {
 	}
   agent {
     kubernetes {
-      inheritFrom 'centos-8'
+      inheritFrom 'ubuntu-2404'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -432,7 +432,7 @@ spec:
                 build job: 'YPBuilds/ep''' + MAJOR + MINOR + '''Y-unit-cen64-gtk3-java24', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
                 build job: 'YPBuilds/ep''' + MAJOR + MINOR + '''Y-unit-macM1-java17', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
                 build job: 'YPBuilds/ep''' + MAJOR + MINOR + '''Y-unit-mac64-java17', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
-                build job: 'Start-smoke-tests', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
+                build job: 'SmokeTests/Start-smoke-tests', parameters: [string(name: 'buildId', value: "${env.BUILD_IID.trim()}")], wait: false
               }
             }
 		}

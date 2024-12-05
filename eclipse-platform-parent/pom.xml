@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse</groupId>
   <artifactId>eclipse-platform-parent</artifactId>
-  <version>4.34.0-SNAPSHOT</version>
+  <version>4.35.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <!--
     See maven-enforcer-plugin configuration to actually break the build if
@@ -42,6 +42,8 @@
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
     <buildType>I</buildType>
     <buildId>${buildType}${buildTimestamp}</buildId>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
      <!--
       releaseName should match the yearly "release train" name.
       For example, "Mars", "Mars.1", "Luna SR2", etc.
@@ -49,7 +51,8 @@
       such as Version: Mars (4.5), for main features.
       See bug 328139.
     -->
-    <releaseName>2024-12</releaseName>
+    <releaseName>2025-03</releaseName>
+    <releaseVersion>4.35</releaseVersion>
     <!--
       The releaseNumbers below, for SDK and Platform, might be
       thought of as the "marketing number" or "branding number",
@@ -64,8 +67,8 @@
       but we'd still want the "marketing number" to be increased to reflect
       "a new yearly release".
     -->
-    <releaseNumberSDK>4.34</releaseNumberSDK>
-    <releaseNumberPlatform>4.34</releaseNumberPlatform>
+    <releaseNumberSDK>${releaseVersion}</releaseNumberSDK>
+    <releaseNumberPlatform>${releaseVersion}</releaseNumberPlatform>
 
     <tycho.version>4.0.10</tycho.version>
 
@@ -77,26 +80,21 @@
       'eclipiserun-repo' repository, such as for computing .api-descriptions and
       generating API Tools reports.
     -->
-    <eclipserun-repo>https://download.eclipse.org/eclipse/updates/4.34-I-builds/</eclipserun-repo>
+    <eclipserun-repo>https://download.eclipse.org/eclipse/updates/4.35-I-builds/</eclipserun-repo>
     
-    <comparator.repo>https://download.eclipse.org/eclipse/updates/4.34-I-builds</comparator.repo>
+    <comparator.repo>https://download.eclipse.org/eclipse/updates/4.35-I-builds</comparator.repo>
 
     <!-- only used when Tycho snapshot repo is enabled in <pluginRepositories> further down -->
     <tycho-snapshot-repo.url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</tycho-snapshot-repo.url>
 
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cbi-jdt-repo.url>https://repo.eclipse.org/content/repositories/eclipse-staging/</cbi-jdt-repo.url>
-    <cbi-ecj-version>3.40.0.v20241112-0530</cbi-ecj-version>
+    <eclipse-snapshots-repo.url>https://repo.eclipse.org/content/repositories/eclipse-snapshots/</eclipse-snapshots-repo.url>
+    <cbi-ecj-version>[3.39,)</cbi-ecj-version>
 
     <!--
       repo for released versions of CBI. Note, we intentionally use as specific a repo as possible.
       See bug 471835.
     -->
-    <eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
-    <cbi-snapshots-repo.url>https://repo.eclipse.org/content/repositories/cbi-snapshots/</cbi-snapshots-repo.url>
-
-    <cbi-releases-repo.url>https://repo.eclipse.org/content/repositories/cbi-releases/</cbi-releases-repo.url>
-
+    <eclipse-cbi-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-cbi-repo.url>
 
     <!--
       This eclipse-p2-repo.url is specifically for the build-individual-bundles profile.
@@ -128,7 +126,7 @@
     <compare-version-with-baselines.skip>true</compare-version-with-baselines.skip>
     <version.baseline.check.skip>${compare-version-with-baselines.skip}</version.baseline.check.skip> <!-- Allows projects to overwrite the value set on the CLI to skip the check in any case. -->
     <tycho.baseline.replace>all</tycho.baseline.replace>
-    <previous-release.baseline>https://download.eclipse.org/eclipse/updates/4.33/R-4.33-202409030240/</previous-release.baseline>
+    <previous-release.baseline>https://download.eclipse.org/eclipse/updates/4.34/R-4.34-202411201800/</previous-release.baseline>
 
     <!--
       Declaration of properties that contribute to the arg line for the tycho-surefire-plugin.
@@ -180,50 +178,16 @@
     <pluginRepository>
       <id>tycho-snapshots</id>
       <url>${tycho-snapshot-repo.url}</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
     </pluginRepository>
 
     <pluginRepository>
-      <id>cbi-jdt</id>
-      <url>${cbi-jdt-repo.url}</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <id>eclipse-snapshots</id>
+      <url>${eclipse-snapshots-repo.url}</url>
     </pluginRepository>
+
     <pluginRepository>
-      <id>cbi-snapshots</id>
-      <url>${cbi-snapshots-repo.url}</url>
-      <snapshots>
-      <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>cbi-releases</id>
-      <url>${cbi-releases-repo.url}</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>eclipse</id>
-      <url>${eclipse-repo.url}</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <id>eclipse-cbi</id>
+      <url>${eclipse-cbi-repo.url}</url>
     </pluginRepository>
   </pluginRepositories>
   <build>
@@ -242,7 +206,7 @@
             <artifact>
               <groupId>org.eclipse</groupId>
               <artifactId>eclipse-sdk-prereqs</artifactId>
-              <version>4.34.0-SNAPSHOT</version>
+              <version>4.35.0-SNAPSHOT</version>
             </artifact>
           </target>
           <environments>
@@ -772,12 +736,12 @@
         <!-- Can specify an exact range here, or something of a loose range, depending on what's needed. -->
         <versionRangeForPatch>[3.19.600.v20240827-1800,3.19.649.v20241205-1800)</versionRangeForPatch>
         <!-- Comment this line when a patch is required on top of I-build -->
-        <comparator.repo>https://download.eclipse.org/eclipse/updates/4.33/R-4.33-202409030240/</comparator.repo>
+        <comparator.repo>https://download.eclipse.org/eclipse/updates/4.34/R-4.34-202411201800/</comparator.repo>
       </properties>
       <repositories>
        <repository>
          <id>eclipse-p2-repo-java23patch</id>
-         <url>https://download.eclipse.org/eclipse/updates/4.33/R-4.33-202409030240/</url>
+         <url>https://download.eclipse.org/eclipse/updates/4.34/R-4.34-202411201800/</url>
          <layout>p2</layout>
        </repository>
      </repositories>
@@ -823,7 +787,7 @@
           For maintenance streams should always be "M-builds".
           Ideally, this value would be provided by the environment, see bug 489789.
         -->
-        <eclipse-p2-repo.url>https://download.eclipse.org/eclipse/updates/4.34-I-builds</eclipse-p2-repo.url>
+        <eclipse-p2-repo.url>https://download.eclipse.org/eclipse/updates/4.35-I-builds</eclipse-p2-repo.url>
       </properties>
       <repositories>
         <repository>
