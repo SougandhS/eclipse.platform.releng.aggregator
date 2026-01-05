@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse</groupId>
   <artifactId>eclipse-platform-parent</artifactId>
-  <version>4.38.0-SNAPSHOT</version>
+  <version>4.39.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <prerequisites>
     <maven>3.9.9</maven>
@@ -37,8 +37,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- releaseYear is used in copyright statements, etc.-->
-    <releaseYear>2025</releaseYear>
-    <releaseMonth>12</releaseMonth>
+    <releaseYear>2026</releaseYear>
+    <releaseMonth>03</releaseMonth>
      <!--
       releaseName should match the yearly "release train" name.
       For example, "Mars", "Mars.1", "Luna SR2", etc.
@@ -47,7 +47,7 @@
       See bug 328139.
     -->
     <releaseName>${releaseYear}-${releaseMonth}</releaseName>
-    <releaseVersion>4.38</releaseVersion>
+    <releaseVersion>4.39</releaseVersion>
     <!--
       The releaseNumbers below, for SDK and Platform, might be
       thought of as the "marketing number" or "branding number",
@@ -65,9 +65,9 @@
     <releaseNumberSDK>${releaseVersion}</releaseNumberSDK>
     <releaseNumberPlatform>${releaseVersion}</releaseNumberPlatform>
 
-    <tycho.version>5.0.1-SNAPSHOT</tycho.version>
+    <tycho.version>5.0.1</tycho.version>
 
-    <cbi-plugins.version>1.5.3</cbi-plugins.version>
+    <cbi-plugins.version>1.5.4-SNAPSHOT</cbi-plugins.version>
     <surefire.version>3.5.4</surefire.version>
 
     <eclipse-sdk-repo>https://download.eclipse.org/eclipse/updates/${releaseVersion}-I-builds/</eclipse-sdk-repo>
@@ -123,7 +123,7 @@
     <compare-version-with-baselines.skip>true</compare-version-with-baselines.skip>
     <version.baseline.check.skip>${compare-version-with-baselines.skip}</version.baseline.check.skip> <!-- Allows projects to overwrite the value set on the CLI to skip the check in any case. -->
     <tycho.baseline.replace>all</tycho.baseline.replace>
-    <previous-release.baseline>https://download.eclipse.org/eclipse/updates/4.37/R-4.37-202509050730/</previous-release.baseline>
+    <previous-release.baseline>https://download.eclipse.org/eclipse/updates/4.38/R-4.38-202512010920/</previous-release.baseline>
 
     <!--
       Declaration of properties that contribute to the arg line for the tycho-surefire-plugin.
@@ -202,7 +202,7 @@
             <artifact>
               <groupId>org.eclipse</groupId>
               <artifactId>eclipse-sdk-prereqs</artifactId>
-              <version>4.38.0-SNAPSHOT</version>
+              <version>4.39.0-SNAPSHOT</version>
             </artifact>
           </target>
           <environments>
@@ -501,6 +501,11 @@
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-gpg-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-versions-plugin</artifactId>
           <version>${tycho.version}</version>
         </plugin>
@@ -609,7 +614,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>3.8.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -619,7 +624,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

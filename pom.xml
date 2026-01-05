@@ -18,7 +18,7 @@
 
   <groupId>org.eclipse.platform</groupId>
   <artifactId>platform-aggregator</artifactId>
-  <version>4.38.0-SNAPSHOT</version>
+  <version>4.39.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <pluginRepositories>
@@ -50,7 +50,8 @@
     <module>equinox.p2</module>
 
     <module>eclipse.platform.releng</module>
-    <module>eclipse.platform.releng.tychoeclipsebuilder</module>
+    <module>products</module>
+    <module>sites</module>
 
   </modules>
 </project>

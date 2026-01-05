@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.platform"
       label="%featureName"
-      version="4.38.0.qualifier"
+      version="4.39.0.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -32,16 +32,12 @@
          id="org.eclipse.help"
          version="0.0.0"/>
 
-   <plugin
-         id="org.apache.ant"
-         version="0.0.0"/>
+   <requires>
+      <import plugin="org.apache.ant" version="1.10.15" match="compatible"/>
+   </requires>
 
    <plugin
          id="org.eclipse.ant.core"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.jcraft.jsch"
          version="0.0.0"/>
 
    <plugin
